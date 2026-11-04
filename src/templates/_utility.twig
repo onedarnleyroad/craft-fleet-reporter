@@ -1,0 +1,41 @@
+{% set fmt = 'j M Y, H:i' %}
+
+{% if skipReason %}
+  <p class="warning">Not reporting. {{ skipReason }}</p>
+{% endif %}
+
+<table class="data fullwidth">
+  <tbody>
+    <tr>
+      <th class="light">Registration</th>
+      <td>{{ registered ? (status ?? 'registered')|ucfirst : 'Not registered yet' }}</td>
+    </tr>
+    <tr>
+      <th class="light">Last report</th>
+      <td>{{ lastSuccessAt ? (lastSuccessAt ~ ' UTC')|date(fmt) : '—' }}</td>
+    </tr>
+    {% if lastError %}
+      <tr>
+        <th class="light">Last error</th>
+        <td><span class="error">{{ lastError }}</span>{% if consecutiveFailures > 1 %} ({{ consecutiveFailures }} attempts){% endif %}</td>
+      </tr>
+    {% endif %}
+    <tr>
+      <th class="light">Next report</th>
+      <td>{{ nextDueAt ? nextDueAt|date(fmt) : 'On the next page load' }}</td>
+    </tr>
+    <tr>
+      <th class="light">Updates checked</th>
+      <td>{{ updatesCheckedAt ? (updatesCheckedAt ~ ' UTC')|date(fmt) : '—' }}</td>
+    </tr>
+  </tbody>
+</table>
+
+{% if currentUser.admin %}
+  <form method="post" style="margin-top:24px">
+    {{ csrfInput() }}
+    {{ actionInput('fleet-reporter/utility/send') }}
+    {{ redirectInput('utilities/fleet-reporter') }}
+    <button type="submit" class="btn submit">Send report now</button>
+  </form>
+{% endif %}

@@ -3,17 +3,38 @@
 namespace onedarnleyroad\fleetreporter\console\controllers;
 
 use craft\console\Controller;
+use onedarnleyroad\fleetreporter\services\Reporter;
 use yii\console\ExitCode;
 
 /**
- * `php craft fleet-reporter/report`: collect and send a report now, without the queue.
+ * Fleet reports from the command line.
  */
 class ReportController extends Controller
 {
-    public function actionIndex()
+    /**
+     * Collect and send a report now, without the queue. Use from a scheduled task on quiet sites.
+     */
+    public function actionIndex(): int
     {
-        $this->stderr("Not implemented yet (milestone M2).\n");
+        $result = (new Reporter())->run('console');
+        $this->stdout($result['message'] . "\n");
 
-        return ExitCode::UNAVAILABLE;
+        return $result['ok'] ? ExitCode::OK : ExitCode::UNSPECIFIED_ERROR;
+    }
+
+    /**
+     * Print the report that would be sent, without sending it.
+     */
+    public function actionShow(): int
+    {
+        $reporter = new Reporter();
+        $this->stdout(json_encode($reporter->preview('console'), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n");
+
+        $skip = $reporter->skipReason();
+        if ($skip !== null) {
+            $this->stderr('Note: this environment would not report. ' . $skip . "\n");
+        }
+
+        return ExitCode::OK;
     }
 }
