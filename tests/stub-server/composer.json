@@ -1,0 +1,10 @@
+{
+  "name": "onedarnleyroad/fleet-stub-server",
+  "description": "Local stand-in for Fleet's report API, for plugin development and CI.",
+  "type": "project",
+  "license": "proprietary",
+  "require": {
+    "php": "^7.4 || ^8.0",
+    "opis/json-schema": "^2.3"
+  }
+}

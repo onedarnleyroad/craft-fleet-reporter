@@ -1,0 +1,138 @@
+{
+  "schema_version": "1",
+  "report_id": "6f1c2b9e-3a7d-4e52-9b1a-0c8d4f2e7a91",
+  "observed_at": "2026-11-04T09:12:03Z",
+  "fingerprint": "3b5d5c3712955042212316173ccf37be800c3aa4c1e3f1c5a6c8e5d0b3b1f0a2",
+  "reporter": {
+    "version": "1.0.0",
+    "trigger": "web"
+  },
+  "environment": {
+    "craft_environment": "production",
+    "primary_base_url": "https://www.example.com/"
+  },
+  "craft": {
+    "version": "4.15.6.2",
+    "edition": "pro",
+    "licence": {
+      "status": "valid",
+      "expired": false,
+      "expires_on": "2027-04-12"
+    },
+    "dev_mode": false,
+    "system_on": true,
+    "pending_migrations": false
+  },
+  "php": {
+    "version": "8.2.29"
+  },
+  "database": {
+    "driver": "mysql",
+    "version": "8.0.36"
+  },
+  "sites": [
+    {
+      "uid": "8a7e1c52-4d1f-4b0e-a3c2-2f9d6e1b7c40",
+      "handle": "default",
+      "name": "Example",
+      "language": "en",
+      "enabled": true,
+      "primary": true,
+      "base_url_setting": "$PRIMARY_SITE_URL",
+      "base_url": "https://www.example.com/"
+    },
+    {
+      "uid": "c3e95b0a-7f24-4c8d-9e61-5a2b0d8f4e13",
+      "handle": "second",
+      "name": "Second site",
+      "language": "en-GB",
+      "enabled": true,
+      "primary": false,
+      "base_url_setting": "$SECOND_SITE_URL",
+      "base_url": "https://www.example.org/"
+    }
+  ],
+  "aliases": [
+    {
+      "site_handle": "default",
+      "url": "https://example.com/",
+      "expected": "redirect",
+      "note": null
+    },
+    {
+      "site_handle": "second",
+      "url": "https://example.org/",
+      "expected": "redirect",
+      "note": null
+    }
+  ],
+  "plugins": [
+    {
+      "handle": "formie",
+      "package": "verbb/formie",
+      "name": "Formie",
+      "version": "2.1.21",
+      "installed": true,
+      "enabled": true,
+      "edition": "pro",
+      "licence": {
+        "status": "valid",
+        "expired": false,
+        "expires_on": "2027-01-30"
+      }
+    },
+    {
+      "handle": "imager-x",
+      "package": "spacecatninja/imager-x",
+      "name": "Imager X",
+      "version": "4.4.1",
+      "installed": true,
+      "enabled": true,
+      "edition": "pro",
+      "licence": {
+        "status": "valid",
+        "expired": true,
+        "expires_on": "2026-09-02"
+      }
+    },
+    {
+      "handle": "servd-asset-storage",
+      "package": "servd/craft-asset-storage",
+      "name": "Servd Assets and Helpers",
+      "version": "3.7.7",
+      "installed": true,
+      "enabled": true,
+      "edition": null,
+      "licence": {
+        "status": "free",
+        "expired": null,
+        "expires_on": null
+      }
+    }
+  ],
+  "updates": {
+    "checked_at": "2026-11-04T03:40:11Z",
+    "source": "cache",
+    "craft": {
+      "latest": "4.16.1",
+      "critical": true
+    },
+    "plugins": {
+      "formie": {
+        "latest": "2.1.27",
+        "critical": true
+      },
+      "imager-x": {
+        "latest": "4.5.0",
+        "critical": false,
+        "expired_licence_blocks_update": true
+      }
+    }
+  },
+  "unknowns": {},
+  "delivery": {
+    "attempt": 1,
+    "consecutive_failures": 0,
+    "last_error": null
+  }
+}

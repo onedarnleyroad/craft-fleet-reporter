@@ -1,0 +1,31 @@
+{
+  "name": "onedarnleyroad/craft-fleet-reporter",
+  "description": "Reports a Craft installation's versions, sites, plugins, updates and licences to One Darnley Road's Fleet.",
+  "type": "craft-plugin",
+  "license": "proprietary",
+  "authors": [
+    { "name": "One Darnley Road", "homepage": "https://www.onedarnleyroad.com" }
+  ],
+  "require": {
+    "php": "^7.2.5 || ^8.0",
+    "craftcms/cms": "^3.7 || ^4.0 || ^5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "onedarnleyroad\\fleetreporter\\": "src/"
+    }
+  },
+  "extra": {
+    "handle": "fleet-reporter",
+    "name": "Fleet Reporter",
+    "developer": "One Darnley Road",
+    "developerUrl": "https://www.onedarnleyroad.com",
+    "class": "onedarnleyroad\\fleetreporter\\Plugin"
+  },
+  "config": {
+    "allow-plugins": {
+      "craftcms/plugin-installer": true,
+      "yiisoft/yii2-composer": true
+    }
+  }
+}

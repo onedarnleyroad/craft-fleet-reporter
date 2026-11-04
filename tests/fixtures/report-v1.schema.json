@@ -1,0 +1,467 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:fleet:report:v1",
+  "title": "Fleet report v1",
+  "description": "Body of POST /api/v1/reports, sent by craft-fleet-reporter. Values the plugin could not collect are null and listed in `unknowns` with a reason; they are never guessed or defaulted.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "report_id",
+    "observed_at",
+    "fingerprint",
+    "reporter",
+    "environment",
+    "craft",
+    "php",
+    "database",
+    "sites",
+    "aliases",
+    "plugins",
+    "updates",
+    "unknowns",
+    "delivery"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "report_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Generated once per collection and reused across retries."
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the values were collected (UTC)."
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "sha256 of normalised primary site base URL + \"|\" + CRAFT_ENVIRONMENT."
+    },
+    "reporter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "trigger"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "craft-fleet-reporter version."
+        },
+        "trigger": {
+          "enum": [
+            "web",
+            "console",
+            "manual"
+          ]
+        }
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "craft_environment",
+        "primary_base_url"
+      ],
+      "properties": {
+        "craft_environment": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Value of CRAFT_ENVIRONMENT."
+        },
+        "primary_base_url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        }
+      }
+    },
+    "craft": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "edition",
+        "licence",
+        "dev_mode",
+        "system_on",
+        "pending_migrations"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "examples": [
+            "4.15.6.2"
+          ]
+        },
+        "edition": {
+          "enum": [
+            "solo",
+            "team",
+            "pro",
+            "enterprise",
+            null
+          ]
+        },
+        "licence": {
+          "$ref": "#/$defs/licence"
+        },
+        "dev_mode": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "system_on": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "pending_migrations": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Craft or any plugin has migrations pending."
+        }
+      }
+    },
+    "php": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "examples": [
+            "8.2.29"
+          ]
+        }
+      }
+    },
+    "database": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "driver",
+        "version"
+      ],
+      "properties": {
+        "driver": {
+          "enum": [
+            "mysql",
+            "mariadb",
+            "pgsql",
+            null
+          ],
+          "description": "MariaDB is reported separately even though Craft treats it as mysql."
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "examples": [
+            "8.0.36",
+            "10.11.8",
+            "15.6"
+          ]
+        }
+      }
+    },
+    "sites": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "uid",
+          "handle",
+          "name",
+          "language",
+          "enabled",
+          "primary",
+          "base_url_setting",
+          "base_url"
+        ],
+        "properties": {
+          "uid": {
+            "type": "string"
+          },
+          "handle": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "primary": {
+            "type": "boolean"
+          },
+          "base_url_setting": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The raw setting only when it is an env var or alias name ($VAR, @alias) or a literal URL. Never an env var's value."
+          },
+          "base_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "description": "Resolved absolute URL, or null when unresolved or relative."
+          }
+        }
+      }
+    },
+    "aliases": {
+      "type": "array",
+      "description": "From the optional `aliases` map in config/fleet-reporter.php.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "site_handle",
+          "url",
+          "expected"
+        ],
+        "properties": {
+          "site_handle": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "expected": {
+            "enum": [
+              "redirect",
+              "serve"
+            ]
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 200
+          }
+        }
+      }
+    },
+    "plugins": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "handle",
+          "package",
+          "name",
+          "version",
+          "installed",
+          "enabled",
+          "licence"
+        ],
+        "properties": {
+          "handle": {
+            "type": "string"
+          },
+          "package": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "examples": [
+              "verbb/formie"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string",
+            "description": "Installed Composer version where available."
+          },
+          "installed": {
+            "type": "boolean"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "edition": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "licence": {
+            "$ref": "#/$defs/licence"
+          }
+        }
+      }
+    },
+    "updates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "checked_at",
+        "source",
+        "craft",
+        "plugins"
+      ],
+      "description": "Result of Craft's update check, refreshed at most daily.",
+      "properties": {
+        "checked_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "source": {
+          "enum": [
+            "live",
+            "cache",
+            null
+          ],
+          "description": "live = fetched for this report; cache = Craft's stored result."
+        },
+        "craft": {
+          "$ref": "#/$defs/update"
+        },
+        "plugins": {
+          "type": "object",
+          "description": "Keyed by plugin handle. Plugins with no update are omitted.",
+          "additionalProperties": {
+            "$ref": "#/$defs/update"
+          }
+        }
+      }
+    },
+    "unknowns": {
+      "type": "object",
+      "description": "JSON pointer of each null value → why it is unknown.",
+      "additionalProperties": {
+        "enum": [
+          "unsupported",
+          "error",
+          "not_permitted",
+          "not_configured"
+        ]
+      },
+      "examples": [
+        {
+          "/database/version": "error",
+          "/updates/checked_at": "not_permitted"
+        }
+      ]
+    },
+    "delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attempt",
+        "consecutive_failures"
+      ],
+      "properties": {
+        "attempt": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "consecutive_failures": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "last_error": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 500
+        }
+      }
+    }
+  },
+  "$defs": {
+    "licence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "expired"
+      ],
+      "description": "From Craft's cached licence info; no extra outbound call beyond the daily update check.",
+      "properties": {
+        "status": {
+          "enum": [
+            "valid",
+            "invalid",
+            "mismatched",
+            "astray",
+            "trial",
+            "free",
+            null
+          ],
+          "description": "Craft's licence key status; free = no licence required."
+        },
+        "expired": {
+          "type": [
+            "boolean",
+            "null"
+          ],
+          "description": "Licence has passed its renewal date (updates blocked)."
+        },
+        "expires_on": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        }
+      }
+    },
+    "update": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "latest",
+        "critical"
+      ],
+      "properties": {
+        "latest": {
+          "type": "string"
+        },
+        "critical": {
+          "type": "boolean"
+        },
+        "expired_licence_blocks_update": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}
