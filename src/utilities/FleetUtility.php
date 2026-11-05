@@ -42,6 +42,8 @@ class FleetUtility extends Utility
             'skipReason' => $reporter->skipReason(),
             'registered' => (bool) $state->get('keyId'),
             'status' => $state->get('status'),
+            'filedAs' => implode(' · ', array_filter([$state->get('project'), $state->get('environment')])),
+            'awaitingApproval' => strpos((string) $state->get('lastError'), 'awaiting_approval') !== false,
             'lastSuccessAt' => $state->get('lastSuccessAt'),
             'lastAttemptAt' => $state->get('lastAttemptAt'),
             'lastError' => $state->get('lastError'),

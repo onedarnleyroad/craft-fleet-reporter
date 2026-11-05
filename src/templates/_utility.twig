@@ -8,8 +8,19 @@
   <tbody>
     <tr>
       <th class="light">Registration</th>
-      <td>{{ registered ? (status ?? 'registered')|ucfirst : 'Not registered yet' }}</td>
+      <td>
+        {% if not registered %}Not registered yet
+        {% elseif awaitingApproval %}Waiting for an admin to approve this re-registration
+        {% elseif status == 'pending' %}Waiting for approval in Fleet
+        {% else %}{{ (status ?? 'registered')|capitalize }}{% endif %}
+      </td>
     </tr>
+    {% if filedAs %}
+      <tr>
+        <th class="light">Filed as</th>
+        <td>{{ filedAs }}</td>
+      </tr>
+    {% endif %}
     <tr>
       <th class="light">Last report</th>
       <td>{{ lastSuccessAt ? (lastSuccessAt ~ ' UTC')|date(fmt) : '—' }}</td>

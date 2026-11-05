@@ -85,6 +85,8 @@ if ($method === 'POST' && $path === '/api/v1/register') {
         'key_id' => STUB_KEY_ID,
         'secret' => STUB_SECRET,
         'status' => 'pending',
+        'project' => null,
+        'environment' => 'Production',
         'next_report_after' => 3600,
     ]);
 }
@@ -101,7 +103,7 @@ if ($method === 'POST' && $path === '/api/v1/reports') {
     file_put_contents($receipts, $report['report_id'] . "\n", FILE_APPEND);
 
     store('report', $body);
-    respond(202, ['status' => 'approved', 'next_report_after' => 3600]);
+    respond(202, ['status' => 'approved', 'project' => 'Stub project', 'environment' => 'Production', 'next_report_after' => 3600]);
 }
 
 if ($method === 'GET' && $path === '/api/v1/installation') {

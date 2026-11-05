@@ -147,6 +147,8 @@ class Reporter
         $interval = isset($response['next_report_after']) ? max(300, (int) $response['next_report_after']) : self::DEFAULT_INTERVAL;
         $this->state->set([
             'status' => isset($response['status']) ? $response['status'] : $this->state->get('status'),
+            'project' => isset($response['project']) ? $response['project'] : null,
+            'environment' => isset($response['environment']) ? $response['environment'] : null,
             'pendingReportId' => null,
             'attempt' => 0,
             'consecutiveFailures' => 0,
